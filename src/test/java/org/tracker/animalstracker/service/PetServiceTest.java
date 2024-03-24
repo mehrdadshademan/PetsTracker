@@ -6,6 +6,8 @@ import jakarta.validation.Validator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +25,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -52,7 +55,7 @@ class PetServiceTest {
     private Pet samplePet(PetDto petDto) {
         Pet pet = new Pet();
         pet.setPetType(petDto.getPetType());
-        pet.setInZone(petDto.isInZone());
+        pet.setInZone(petDto.getInZone());
         pet.setTrackerType(petDto.getTrackerType());
         pet.setOwnerId(petDto.getOwnerId());
         return pet;
@@ -67,7 +70,7 @@ class PetServiceTest {
         PetDto pets = petService.createPets(petDto).get();
         Assertions.assertEquals(petDto.getOwnerId(), pets.getOwnerId());
         Assertions.assertEquals(petDto.getTrackerType(), pets.getTrackerType());
-        Assertions.assertEquals(petDto.isInZone(), pets.isInZone());
+        Assertions.assertEquals(petDto.getInZone(), pets.getInZone());
         verify(petRepository, times(1)).save(any());
         verify(mapper, times(1)).toPetDto(any());
     }
@@ -82,7 +85,8 @@ class PetServiceTest {
         Assertions.assertThrows(PetInputNotValidException.class, () -> petService.createPets(petDto));
     }
 
-    @Test
+    @ParameterizedTest
+    @MethodSource("providePetDto")
     void should_ThrowException_When_InsertWrongOwnerId() {
         PetDto petDto = samplePetDto();
         petDto.setOwnerId(-1);
@@ -91,6 +95,14 @@ class PetServiceTest {
         violations.add(violation);
         when(validator.validate(petDto)).thenReturn(violations);
         Assertions.assertThrows(ConstraintViolationException.class, () -> petService.createPets(petDto));
+    }
+    static Stream<PetDto> providePetDto() {
+        return Stream.of(
+                new PetDto(null, TrackerType.BIG, 12, false, false),
+                new PetDto(PetType.CAT, null, 15, true, true),
+                new PetDto(PetType.CAT, TrackerType.BIG, -1, true, true),
+                new PetDto(PetType.CAT, TrackerType.BIG, 0, null, true)
+        );
     }
 
     @Test

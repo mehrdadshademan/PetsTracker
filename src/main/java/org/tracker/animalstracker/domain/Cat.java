@@ -11,7 +11,7 @@ import org.tracker.animalstracker.enums.PetType;
 @Data
 @DiscriminatorValue("CAT")
 public class Cat extends Pet {
-    private boolean lostTracker;
+    private Boolean lostTracker;
     @Override
     public void setPetType(PetType petType) {
         super.setPetType(PetType.CAT);

@@ -30,5 +30,5 @@ public class Pet {
 
     private Integer ownerId;
 
-    private boolean inZone;
+    private Boolean inZone;
 }

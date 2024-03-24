@@ -48,7 +48,7 @@ public class PetService {
         return Optional.of(mapper.toPetDto(savedPet));
     }
 
-    public void validationPets(PetDto petDto) {
+    private void validationPets(PetDto petDto) {
         if (petDto == null) {
             log.error("The input method is null");
             throw new PetInputNotValidException("Input is null");

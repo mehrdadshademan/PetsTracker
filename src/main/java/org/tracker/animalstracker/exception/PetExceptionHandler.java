@@ -1,4 +1,4 @@
-package org.tracker.animalstracker.controller;
+package org.tracker.animalstracker.exception;
 
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.tracker.animalstracker.dto.ExceptionDto;
-import org.tracker.animalstracker.exception.PetInputNotValidException;
-import org.tracker.animalstracker.exception.PetNotFindException;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -10,6 +10,7 @@ import org.tracker.animalstracker.domain.Pet;
 import org.tracker.animalstracker.dto.PetDto;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper(componentModel = "spring")
 public interface PetMapper {
@@ -27,7 +28,8 @@ public interface PetMapper {
     @AfterMapping
     default void afterToDto(Pet pet, @MappingTarget PetDto petDto) {
         if (pet instanceof Cat) {
-            petDto.setLostTracker(((Cat) pet).isLostTracker());
+            Optional.ofNullable(((Cat) pet).getLostTracker())
+                    .ifPresent(petDto::setLostTracker);
         }
     }
 }
